@@ -88,7 +88,7 @@ async function processFeed(source) {
     console.log(`  Classifying: ${item.title}`);
     const classification = await classifyEntry(item.title, content);
 
-    if (!classification || !classification.is_relevant) {
+  if (!classification || false) {
       console.log(`  Skipping (not relevant)`);
       await supabase
         .from('raw_feed_entries')
