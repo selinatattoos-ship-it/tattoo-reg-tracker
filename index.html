@@ -1,1 +1,318 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INKWATCH · Tattoo Industry Compliance Surveillance</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100vh;background:#080b14;color:#c8cfe8;font-family:'DM Mono',monospace;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:#0d1020}
+::-webkit-scrollbar-thumb{background:#1e2840;border-radius:2px}
+.fbtn{background:transparent;border:1px solid #1e2436;color:#5a6280;padding:4px 10px;border-radius:4px;cursor:pointer;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;transition:all .15s;}
+.fbtn:hover{border-color:#2e3856;color:#8892b0;}
+.fbtn.on{background:#0A84FF18;border-color:#0A84FF66;color:#0A84FF;}
+.sbtn{background:#0A84FF18;border:1px solid #0A84FF66;color:#0A84FF;padding:7px 16px;border-radius:5px;cursor:pointer;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;transition:all .2s;}
+.sbtn:hover{background:#0A84FF28;}
+.sbtn:disabled{opacity:.5;cursor:default;}
+.scard{background:#111520;border:1px solid #1e2436;border-radius:6px;padding:12px 14px;cursor:pointer;margin-bottom:7px;transition:all .18s;border-left:3px solid transparent;}
+.scard:hover{background:#1a1f2e;}
+.dpin{background:#0d1020;border:1px solid #1a2040;border-radius:6px;padding:12px 14px;margin-bottom:10px;}
+input[type=text]{background:#0d1020;border:1px solid #1e2436;color:#c8cfe8;padding:6px 12px;border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;outline:none;width:200px;}
+.grid-bg{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(#0A84FF08 1px,transparent 1px),linear-gradient(90deg,#0A84FF08 1px,transparent 1px);background-size:40px 40px;}
+.wrap{position:relative;z-index:10;max-width:1200px;margin:0 auto;padding:0 20px;}
+@media(max-width:768px){
+  .main-cols{flex-direction:column!important;}
+  .signal-col{flex:none!important;width:100%!important;}
+}
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<div style="position:relative;z-index:10;">
+
+  <div style="background:linear-gradient(180deg,#0d1020,transparent);border-bottom:1px solid #1a2040;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+    <div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span id="pulse-dot" style="width:8px;height:8px;border-radius:50%;background:#FF2D55;display:inline-block;animation:pulse 1.5s infinite;"></span>
+        <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:#e8eaf0;letter-spacing:.08em;">INKWATCH</span>
+        <span style="font-size:9px;color:#3a4460;border:1px solid #1e2840;padding:2px 7px;border-radius:3px;letter-spacing:.1em;">COMPLIANCE SURVEILLANCE</span>
+      </div>
+      <div style="font-size:9px;color:#3a4460;margin-top:3px;letter-spacing:.07em;">Tattoo Industry · FDA · EPA · CBP · OSHA · FTC · EU Authorities</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="text-align:right;font-size:9px;color:#3a4460;">
+        <div>LAST SCAN</div>
+        <div id="last-scan" style="color:#5a6a90;">—</div>
+      </div>
+      <button class="sbtn" id="scan-btn" onclick="runScan()">
+        <i class="ti ti-player-play" style="font-size:11px;vertical-align:-1px;margin-right:4px;"></i>
+        <span id="scan-label">LIVE SCAN</span>
+      </button>
+    </div>
+  </div>
+
+  <div style="padding:20px 24px;">
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:18px;">
+      <div style="background:#0d1020;border:1px solid #FF2D5533;border-radius:8px;padding:14px 16px;">
+        <div style="font-size:28px;font-weight:800;font-family:'Syne',sans-serif;color:#FF2D55;" id="s-crit">—</div>
+        <div style="font-size:9px;color:#888;margin-top:3px;letter-spacing:.08em;">CRITICAL</div>
+        <div style="font-size:9px;color:#FF2D5566;">Immediate action</div>
+      </div>
+      <div style="background:#0d1020;border:1px solid #FF950033;border-radius:8px;padding:14px 16px;">
+        <div style="font-size:28px;font-weight:800;font-family:'Syne',sans-serif;color:#FF9500;" id="s-high">—</div>
+        <div style="font-size:9px;color:#888;margin-top:3px;letter-spacing:.08em;">HIGH RISK</div>
+        <div style="font-size:9px;color:#FF950066;">Monitor closely</div>
+      </div>
+      <div style="background:#0d1020;border:1px solid #0A84FF33;border-radius:8px;padding:14px 16px;">
+        <div style="font-size:28px;font-weight:800;font-family:'Syne',sans-serif;color:#0A84FF;" id="s-active">—</div>
+        <div style="font-size:9px;color:#888;margin-top:3px;letter-spacing:.08em;">ACTIVE</div>
+        <div style="font-size:9px;color:#0A84FF66;">In motion</div>
+      </div>
+      <div style="background:#0d1020;border:1px solid #BF5AF233;border-radius:8px;padding:14px 16px;">
+        <div style="font-size:28px;font-weight:800;font-family:'Syne',sans-serif;color:#BF5AF2;" id="s-total">—</div>
+        <div style="font-size:9px;color:#888;margin-top:3px;letter-spacing:.08em;">TOTAL SIGNALS</div>
+        <div style="font-size:9px;color:#BF5AF266;">All tracked</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center;">
+      <input type="text" id="search" placeholder="Search signals, tags, chemicals..." oninput="applyFilters()">
+      <div id="agency-filters" style="display:flex;gap:5px;flex-wrap:wrap;"></div>
+    </div>
+    <div id="cat-filters" style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:16px;"></div>
+
+    <div class="main-cols" style="display:flex;gap:20px;">
+      <div class="signal-col" style="flex:0 0 400px;">
+        <div id="signal-count" style="font-size:9px;color:#3a4460;margin-bottom:8px;letter-spacing:.1em;">LOADING...</div>
+        <div id="signal-list" style="max-height:600px;overflow-y:auto;padding-right:4px;"></div>
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div id="detail-panel"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="border-top:1px solid #1a2040;padding:10px 24px;display:flex;justify-content:space-between;align-items:center;font-size:9px;color:#2a3456;flex-wrap:wrap;gap:8px;">
+    <span>INKWATCH v2.0 · Tattoo Industry Regulatory Intelligence</span>
+    <span>Monitoring: FDA · EPA · CBP · OSHA · FTC · State Boards · EU Authorities</span>
+    <span style="color:#30D15844;">● LIVE</span>
+  </div>
+
+</div>
+
+<script>
+const SB_URL = 'https://bnclpshyrdxqnbbklqdo.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJuY2xwc2h5cmR4cW5iYmtscWRvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwNDg1OTksImV4cCI6MjA5NjYyNDU5OX0.TbVqzWxd_5LrsUa7sHMU8AHVUHKsqMPFtYhlsXeXW_w';
+const ANT_KEY = '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';
+
+const RISK_COLORS = {critical:'#FF2D55',high:'#FF9500',medium:'#FFD60A',low:'#30D158',info:'#0A84FF'};
+const AGENCY_COLORS = {FDA:'#0A84FF',EPA:'#30D158',CBP:'#FF9500',OSHA:'#BF5AF2',FTC:'#FF2D55',STATE:'#64D2FF',EU:'#5DCAA5'};
+const riskOrder = {critical:0,high:1,medium:2,low:3,info:4};
+
+let allSignals = [];
+let filtered = [];
+let selected = null;
+let agencyFilter = 'ALL';
+let catFilter = 'ALL';
+
+const FALLBACK = [
+  {id:'f1',title:'FDA Draft Guidance: Heavy Metal Limits in Tattoo Inks',agency:'FDA',category:'INKS',risk:'critical',date:'2026-05-28',status:'ACTIVE',summary:'FDA proposes new maximum concentration limits for lead, arsenic, mercury, and cadmium in tattoo inks. Comment period open through August 15.',productImpact:['Inks','Pigments','Pre-mixed colors'],action:'Submit comments, audit current supplier COAs',tags:['heavy metals','pigments','color additives'],region:'US'},
+  {id:'f2',title:'CBP Alert: HS Code Reclassification – Tattoo Machines',agency:'CBP',category:'MACHINES',risk:'high',date:'2026-05-20',status:'ACTIVE',summary:'CBP issued binding ruling reclassifying rotary tattoo machines under HS 8479.89.98, affecting duty rates. Retroactive audits possible.',productImpact:['Rotary machines','Pen-style devices'],action:'Review import declarations, consult customs broker',tags:['tariffs','HS codes','duties'],region:'US'},
+  {id:'f3',title:'EU ResAP Successor Regulation: 4000+ Substances Banned',agency:'EU',category:'INKS',risk:'high',date:'2026-04-30',status:'ENACTED',summary:'The EU updated tattoo ink regulation bans 4000+ substances. US exporters must provide full ingredient disclosure.',productImpact:['All ink colors','Mixing bases'],action:'Full reformulation audit for EU-destined products',tags:['EU','export','banned substances'],region:'EU/US'},
+  {id:'f4',title:'FDA MedWatch: Contaminated Ink Recall – Staph Aureus',agency:'FDA',category:'INKS',risk:'critical',date:'2026-05-31',status:'ACTIVE',summary:'FDA issued Class II recall for multiple ink brands citing Staphylococcus aureus contamination.',productImpact:['Pre-filled cartridges','Bulk ink'],action:'Cross-reference batch numbers, halt affected inventory',tags:['recall','contamination','microbial'],region:'US'},
+  {id:'f5',title:'OSHA Updated Bloodborne Pathogen Standard',agency:'OSHA',category:'NEEDLES',risk:'medium',date:'2026-04-10',status:'ENACTED',summary:'OSHA revised sharps disposal container specifications affecting tattoo studios. New requirements for puncture resistance grading.',productImpact:['Needles','Cartridges','Disposal containers'],action:'Update studio compliance kits, notify clients',tags:['sharps','disposal','workplace safety'],region:'US'},
+  {id:'f6',title:'FTC Green Claims Rule: Vegan/Non-Toxic Ink Labeling',agency:'FTC',category:'LABELING',risk:'medium',date:'2026-05-12',status:'ACTIVE',summary:'FTC updated Green Guides now apply to tattoo ink marketing. Unsubstantiated vegan or non-toxic claims face enforcement.',productImpact:['All inks','Marketing materials'],action:'Audit product claims, obtain certifications',tags:['marketing','green guides','labeling'],region:'US'},
+];
+
+async function fetchFromSupabase() {
+  const tables = ['raw_feed_entries','regulations','regulation_changes'];
+  for (const t of tables) {
+    try {
+      const r = await fetch(`${SB_URL}/rest/v1/${t}?select=*&order=created_at.desc&limit=50`,{
+        headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`}
+      });
+      if (!r.ok) continue;
+      const d = await r.json();
+      if (Array.isArray(d) && d.length > 0) return d;
+    } catch(e) {}
+  }
+  return [];
+}
+
+async function enrichWithClaude(rawEntries) {
+  const items = rawEntries.slice(0,20).map((e,i) => ({
+    idx:i,
+    title:e.title||e.raw_title||'Untitled',
+    content:e.summary||e.description||e.content||e.raw_content||'',
+    source:e.source_name||(e.sources&&e.sources.name)||'',
+    url:e.url||e.link||''
+  }));
+  const prompt = `You are a tattoo industry regulatory intelligence analyst. Classify these raw RSS feed entries.
+Return ONLY a JSON array (no markdown, no explanation):
+[{"idx":number,"title":"cleaned title","agency":"FDA|EPA|CBP|OSHA|FTC|STATE|EU","category":"INKS|MACHINES|NEEDLES|IMPORT/EXPORT|LAB TESTING|LABELING|OTHER","risk":"critical|high|medium|low|info","status":"ACTIVE|MONITORING|ENACTED","summary":"2-3 sentence plain English summary for tattoo artists and shop owners","productImpact":["affected","products"],"action":"one concrete action","tags":["2-4","tags"],"region":"US|EU|EU/US|GLOBAL"}]
+Risk: critical=immediate health/legal risk, high=significant business impact 90 days, medium=monitor, low=informational.
+Entries: ${JSON.stringify(items)}`;
+
+  const resp = await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':ANT_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4000,messages:[{role:'user',content:prompt}]})
+  });
+  if (!resp.ok) throw new Error(`Claude API ${resp.status}`);
+  const data = await resp.json();
+  const text = data.content.map(c=>c.text||'').join('');
+  const parsed = JSON.parse(text.replace(/```json|```/g,'').trim());
+  return parsed.map((sig,i) => ({
+    ...sig,
+    id:`live-${i}`,
+    date:rawEntries[sig.idx]?.published_at||rawEntries[sig.idx]?.created_at||new Date().toISOString().split('T')[0],
+    url:rawEntries[sig.idx]?.url||rawEntries[sig.idx]?.link||''
+  }));
+}
+
+function badge(agency){const c=AGENCY_COLORS[agency]||'#888';return `<span style="background:${c}18;color:${c};border:1px solid ${c}44;border-radius:3px;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.1em;">${agency}</span>`;}
+function riskBadge(risk){const c=RISK_COLORS[risk]||'#888';return `<span style="background:${c}22;color:${c};border:1px solid ${c}55;border-radius:3px;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.1em;">${risk.toUpperCase()}</span>`;}
+function statusDot(status){const map={ACTIVE:'#FF2D55',MONITORING:'#FFD60A',ENACTED:'#30D158'};const c=map[status]||'#888';return `<span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;color:${c};"><span style="width:6px;height:6px;border-radius:50%;background:${c};display:inline-block;${status==='ACTIVE'?'animation:pulse 1.6s infinite':''}"></span>${status}</span>`;}
+
+function renderList(){
+  const list=document.getElementById('signal-list');
+  const count=document.getElementById('signal-count');
+  count.textContent=`${filtered.length} SIGNALS · SORTED BY RISK`;
+  if(!filtered.length){list.innerHTML='<div style="color:#3a4460;font-size:11px;padding:20px 0;text-align:center;">No signals match filters</div>';return;}
+  list.innerHTML=filtered.map(s=>{
+    const rc=RISK_COLORS[s.risk]||'#888';
+    const isSel=selected&&selected.id===s.id;
+    return `<div class="scard" onclick="selectSignal('${s.id}')" style="border-left-color:${rc};${isSel?`background:#1a1f2e;border-color:${rc}88;`:''}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">${badge(s.agency)}${riskBadge(s.risk)}</div>
+        ${statusDot(s.status)}
+      </div>
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:12px;color:#e8eaf0;line-height:1.4;margin-bottom:5px;">${s.title}</div>
+      <div style="font-size:10px;color:#5a6280;">${s.date||''} · ${s.category||''} · ${s.region||''}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderDetail(){
+  const panel=document.getElementById('detail-panel');
+  if(!selected){
+    panel.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;color:#2a3456;text-align:center;">
+      <div style="font-size:48px;margin-bottom:12px;opacity:.3;">◉</div>
+      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;letter-spacing:.1em;margin-bottom:6px;">SELECT A SIGNAL</div>
+      <div style="font-size:11px;max-width:220px;line-height:1.6;color:#3a4460;">Click any signal from the feed to view full intelligence detail and recommended actions</div>
+    </div>`;
+    return;
+  }
+  const s=selected;
+  const rc=RISK_COLORS[s.risk]||'#888';
+  panel.innerHTML=`<div style="background:#0d1020;border:1px solid ${rc}44;border-radius:8px;padding:20px;animation:fadeIn .2s ease;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">${badge(s.agency)}${riskBadge(s.risk)}${statusDot(s.status)}</div>
+      <div style="font-size:9px;color:#3a4460;">${s.date||''}</div>
+    </div>
+    <h2 style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#e8eaf0;margin-bottom:14px;line-height:1.35;">${s.title}</h2>
+    <div style="background:#080b14;border:1px solid #1a2040;border-radius:6px;padding:14px 16px;margin-bottom:12px;">
+      <div style="font-size:9px;color:#3a4460;margin-bottom:6px;letter-spacing:.1em;">INTELLIGENCE SUMMARY</div>
+      <p style="font-size:12px;color:#8892b0;line-height:1.65;">${s.summary||'No summary available.'}</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+      <div style="background:#080b14;border:1px solid #1a2040;border-radius:6px;padding:12px 14px;">
+        <div style="font-size:9px;color:#3a4460;margin-bottom:6px;letter-spacing:.1em;">AFFECTED PRODUCTS</div>
+        ${(s.productImpact||[]).map(p=>`<div style="font-size:11px;color:#c8cfe8;margin-bottom:3px;"><span style="color:${rc};font-size:9px;">▸</span> ${p}</div>`).join('')}
+      </div>
+      <div style="background:#080b14;border:1px solid #30D15822;border-radius:6px;padding:12px 14px;">
+        <div style="font-size:9px;color:#3a4460;margin-bottom:6px;letter-spacing:.1em;">RECOMMENDED ACTION</div>
+        <div style="font-size:11px;color:#30D158;line-height:1.6;">${s.action||'Review and monitor.'}</div>
+      </div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <div style="font-size:9px;color:#3a4460;margin-bottom:6px;letter-spacing:.1em;">TAGS</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;">
+        ${(s.tags||[]).map(t=>`<span style="background:#1a2040;color:#5a6a90;border:1px solid #2a3050;padding:2px 8px;border-radius:3px;font-size:10px;">${t}</span>`).join('')}
+      </div>
+    </div>
+    ${s.url?`<a href="${s.url}" target="_blank" rel="noopener" style="font-size:10px;color:#0A84FF;text-decoration:none;letter-spacing:.06em;"><i class="ti ti-external-link" style="font-size:11px;vertical-align:-1px;margin-right:4px;"></i>VIEW SOURCE</a>`:''}
+  </div>`;
+}
+
+function selectSignal(id){
+  selected=allSignals.find(s=>s.id===id)||null;
+  renderList();
+  renderDetail();
+}
+
+function applyFilters(){
+  const q=(document.getElementById('search').value||'').toLowerCase();
+  filtered=allSignals
+    .filter(s=>agencyFilter==='ALL'||s.agency===agencyFilter)
+    .filter(s=>catFilter==='ALL'||s.category===catFilter)
+    .filter(s=>!q||(s.title||'').toLowerCase().includes(q)||(s.summary||'').toLowerCase().includes(q)||(s.tags||[]).some(t=>t.includes(q)))
+    .sort((a,b)=>(riskOrder[a.risk]||9)-(riskOrder[b.risk]||9));
+  renderList();
+}
+
+function buildFilterBar(){
+  const agencies=['ALL',...new Set(allSignals.map(s=>s.agency).filter(Boolean))];
+  const cats=['ALL',...new Set(allSignals.map(s=>s.category).filter(Boolean))];
+  document.getElementById('agency-filters').innerHTML=agencies.map(a=>
+    `<button class="fbtn${agencyFilter===a?' on':''}" onclick="agencyFilter='${a}';buildFilterBar();applyFilters();">${a}</button>`
+  ).join('');
+  document.getElementById('cat-filters').innerHTML=cats.map(c=>
+    `<button class="fbtn${catFilter===c?' on':''}" onclick="catFilter='${c}';buildFilterBar();applyFilters();">${c}</button>`
+  ).join('');
+}
+
+function updateStats(){
+  document.getElementById('s-crit').textContent=allSignals.filter(s=>s.risk==='critical').length;
+  document.getElementById('s-high').textContent=allSignals.filter(s=>s.risk==='high').length;
+  document.getElementById('s-active').textContent=allSignals.filter(s=>s.status==='ACTIVE').length;
+  document.getElementById('s-total').textContent=allSignals.length;
+}
+
+async function runScan(){
+  const btn=document.getElementById('scan-btn');
+  const label=document.getElementById('scan-label');
+  btn.disabled=true;
+  label.textContent='SCANNING...';
+  document.getElementById('signal-count').textContent='Fetching from Supabase...';
+  document.getElementById('signal-list').innerHTML='<div style="color:#3a4460;font-size:11px;padding:20px 0;text-align:center;animation:pulse 1s infinite;">Pulling live data...</div>';
+  try {
+    const raw=await fetchFromSupabase();
+    if(raw.length===0){
+      allSignals=FALLBACK;
+      document.getElementById('signal-count').textContent='No DB data yet — showing sample signals';
+    } else {
+      document.getElementById('signal-count').textContent=`Enriching ${raw.length} entries with AI...`;
+      document.getElementById('signal-list').innerHTML='<div style="color:#0A84FF;font-size:11px;padding:20px 0;text-align:center;animation:pulse 1s infinite;">Claude is analyzing entries...</div>';
+      try {
+        allSignals=await enrichWithClaude(raw);
+      } catch(e) {
+        allSignals=FALLBACK;
+      }
+    }
+  } catch(e){
+    allSignals=FALLBACK;
+  }
+  updateStats();
+  buildFilterBar();
+  applyFilters();
+  document.getElementById('last-scan').textContent=new Date().toLocaleTimeString();
+  label.textContent='LIVE SCAN';
+  btn.disabled=false;
+}
+
+runScan();
+</script>
+</body>
+</html>
